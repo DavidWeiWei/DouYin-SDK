@@ -6,13 +6,13 @@ using System.Text;
 namespace DYSDK.Request
 {
     /// <summary>
-    /// 生成 client_token
+    /// /oauth/refresh_token/
     /// </summary>
-    public class OauthClientToken : BaseRequest
+    public class OauthRefreshTokenRequest : BaseRequest
     {
         public override string ApiName()
         {
-            return "/oauth/client_token";
+            return "/oauth/refresh_token/";
         }
 
         public override string RequestType()
@@ -27,15 +27,15 @@ namespace DYSDK.Request
         public string ClientKey { get; set; }
 
         /// <summary>
-        /// 应用唯一标识对应的密钥
-        /// </summary>
-        [JsonProperty("client_secret")]
-        public string ClientSecret { get; set; }
-
-        /// <summary>
-        /// 填写client_credential
+        /// 填refresh_token
         /// </summary>
         [JsonProperty("grant_type")]
-        public string GrantType = "client_credential";
+        public string GrantType = "refresh_token";
+
+        /// <summary>
+        /// 填写通过access_token获取到的refresh_token参数
+        /// </summary>
+        [JsonProperty("refresh_token")]
+        public string RefreshToken { get; set; }
     }
 }

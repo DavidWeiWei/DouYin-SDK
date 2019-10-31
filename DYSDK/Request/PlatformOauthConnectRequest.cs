@@ -8,7 +8,7 @@ namespace DYSDK.Request
     /// <summary>
     /// /platform/oauth/connect/
     /// </summary>
-    public class PlatformOauthConnect:BaseRequest
+    public class PlatformOauthConnectRequest:BaseRequest
     {
         public override string ApiName()
         {

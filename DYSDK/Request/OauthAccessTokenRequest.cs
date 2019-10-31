@@ -8,7 +8,7 @@ namespace DYSDK.Request
     /// <summary>
     /// 获取access_token
     /// </summary>
-    public class OauthAccessToken:BaseRequest
+    public class OauthAccessTokenRequest : BaseRequest
     {
         public override string ApiName()
         {
