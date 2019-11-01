@@ -30,7 +30,13 @@ namespace DYSDK.Request
         /// 填refresh_token
         /// </summary>
         [JsonProperty("grant_type")]
-        public string GrantType = "refresh_token";
+        public string GrantType
+        {
+            get
+            {
+                return "refresh_token";
+            }
+        }
 
         /// <summary>
         /// 填写通过access_token获取到的refresh_token参数

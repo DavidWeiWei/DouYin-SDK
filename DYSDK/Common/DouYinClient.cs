@@ -55,7 +55,7 @@ namespace DYSDK.Common
                     }
                     else
                     {
-                        value = p.GetValue(request).ToString();
+                        value = p.GetValue(request) != null ? p.GetValue(request).ToString() : string.Empty;
                     }
                     switch (key)
                     {
@@ -97,14 +97,22 @@ namespace DYSDK.Common
                 request.Method = Method.GET;
             }
             IRestResponse response = restClient.Execute(request);
-            if (!string.IsNullOrWhiteSpace(response.Content))
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                return JsonConvert.DeserializeObject<Res>(response.Content);
+                if (!string.IsNullOrWhiteSpace(response.Content))
+                {
+                    return JsonConvert.DeserializeObject<Res>(response.Content);
+                }
+                else
+                {
+                    throw new Exception("Response.Content is null");
+                }
             }
             else
             {
-                throw new Exception("Response.Content is null");
+                throw new Exception("error code:"+ response.Content);
             }
+           
         }
         #endregion
 
@@ -123,13 +131,13 @@ namespace DYSDK.Common
                 RedirectURI = redirect_uri
             };
 
-            return BaseUrl + request.ApiName() + GetRequestKeyValue(request);
+            return BaseUrl + request.ApiName()+"?" + GetRequestKeyValue(request);
         }
         #endregion
 
-        #region 获取用户授权
+        #region 获取用户授权token
         /// <summary>
-        /// 获取用户的授权信息
+        /// 获取用户的授权token
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
@@ -140,13 +148,13 @@ namespace DYSDK.Common
                Code = code
             };
             OauthAccessTokenResponse response = Execute<OauthAccessTokenResponse>(request);
-            if (response.Code == "200")
+            if (response.Message == "success")
             {
-                return response.Description.Data;
+                return response.Data;
             }
             else
             {
-                throw new Exception("error code:"+response.Code);
+                throw new Exception("error code:" + response.Data.ErrorCode + ",error msg:" + response.Data.Description);
             }
         }
         #endregion
@@ -165,13 +173,13 @@ namespace DYSDK.Common
             };
 
             OauthRefreshTokenResponse response = Execute<OauthRefreshTokenResponse>(request);
-            if (response.Code == "200")
+            if (response.Message == "success")
             {
-                return response.Description.Data;
+                return response.Data;
             }
             else
             {
-                throw new Exception("error code:" + response.Code);
+                throw new Exception("error code:" + response.Data.ErrorCode + ",error msg:" + response.Data.Description);
             }
         }
         #endregion

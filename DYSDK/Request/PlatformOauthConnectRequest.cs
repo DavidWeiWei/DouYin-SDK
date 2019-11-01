@@ -30,7 +30,12 @@ namespace DYSDK.Request
         /// 填写code
         /// </summary>
         [JsonProperty("response_type")]
-        public string ResponseType = "code";
+        public string ResponseType {
+            get
+            {
+                return "code";
+            }
+        }
 
         /// <summary>
         /// 应用授权作用域,多个授权作用域以英文逗号（,）分隔

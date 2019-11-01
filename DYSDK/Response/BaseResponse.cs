@@ -7,13 +7,13 @@ namespace DYSDK.Response
 {
     public class BaseResponse<T> where T: class
     {
-        [JsonProperty("Code")]
-        public string Code { get; set; }
+        /// <summary>
+        /// 消息
+        /// </summary>
+        [JsonProperty("message")]
+        public string Message { get; set; }
 
-        [JsonProperty("Description")]
-        public T Description { get; set; }
-
-        [JsonProperty("Links")]
-        public string Links { get; set; }
+        [JsonProperty("data")]
+        public T Data { get; set; }
     }
 }

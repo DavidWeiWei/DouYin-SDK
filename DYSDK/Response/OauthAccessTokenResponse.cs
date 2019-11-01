@@ -9,7 +9,7 @@ namespace DYSDK.Response
     /// <summary>
     /// 获取access_token 响应类
     /// </summary>
-    public class OauthAccessTokenResponse:BaseResponse<OauthResponseDto>
+    public class OauthAccessTokenResponse:BaseResponse<OauthResponseData>
     {
         
     }

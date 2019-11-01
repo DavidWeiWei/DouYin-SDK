@@ -6,21 +6,6 @@ using System.Text;
 namespace DYSDK.Dto
 {
     /// <summary>
-    /// 授权相关响应Dto
-    /// </summary>
-    public class OauthResponseDto
-    {
-        /// <summary>
-        /// 消息
-        /// </summary>
-        [JsonProperty("message")]
-        public string Message { get; set; }
-
-        [JsonProperty("data")]
-        public OauthResponseData Data { get; set; }
-    }
-
-    /// <summary>
     /// 授权接口返回 data实体
     /// </summary>
     public class OauthResponseData

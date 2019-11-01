@@ -42,6 +42,10 @@ namespace DYSDK.Request
         /// 填写authorization_code
         /// </summary>
         [JsonProperty("grant_type")]
-        public string GrantType = "authorization_code";
+        public string GrantType { get
+            {
+                return "authorization_code";
+            }
+        }
     }
 }
