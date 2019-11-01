@@ -36,7 +36,7 @@ namespace DYSDK.Request
         /// 应用授权作用域,多个授权作用域以英文逗号（,）分隔
         /// </summary>
         [JsonProperty("scope")]
-        public string Scope = "user_info";
+        public string Scope { get; set; }
 
         /// <summary>
         /// 授权成功后的回调地址，必须以http/https开头。
