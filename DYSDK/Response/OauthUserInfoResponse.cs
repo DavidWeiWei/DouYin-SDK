@@ -6,10 +6,9 @@ using System.Text;
 namespace DYSDK.Response
 {
     /// <summary>
-    /// 刷新access_token 响应类
+    /// 获取 用户公开信息传输类
     /// </summary>
-    public class OauthRefreshTokenResponse:BaseResponse<OauthResponseData>
+    public class OauthUserInfoResponse:BaseResponse<OauthUserInfoData>
     {
-        
     }
 }

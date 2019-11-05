@@ -12,7 +12,8 @@ namespace DYSDK.Request
         public abstract string ApiName();
 
         /// <summary>
-        /// api请求类型 POST/GET
+        /// api请求类型 Post/Get
+        /// Post 类型中 JsonProperty order = 0 表示拼接到 url  order = 1 表示拼接到 body
         /// </summary>
         /// <returns></returns>
         public abstract string RequestType();

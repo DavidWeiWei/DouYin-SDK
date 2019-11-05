@@ -5,6 +5,10 @@ using Newtonsoft.Json;
 
 namespace DYSDK.Response
 {
+    /// <summary>
+    /// 响应基类
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class BaseResponse<T> where T: class
     {
         /// <summary>

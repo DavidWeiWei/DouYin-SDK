@@ -17,7 +17,7 @@ namespace DYSDK.Request
 
         public override string RequestType()
         {
-            return "Get";
+            return "GET";
         }
 
         /// <summary>

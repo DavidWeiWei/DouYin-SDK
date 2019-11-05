@@ -6,10 +6,11 @@ using System.Text;
 namespace DYSDK.Response
 {
     /// <summary>
-    /// 刷新access_token 响应类
+    /// 视频响应实体 
+    /// /video/data
+    /// /video/list
     /// </summary>
-    public class OauthRefreshTokenResponse:BaseResponse<OauthResponseData>
+    public class VideoListResponse:BaseResponse<VideoListData>
     {
-        
     }
 }

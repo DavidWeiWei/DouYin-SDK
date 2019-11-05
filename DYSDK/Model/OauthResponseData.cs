@@ -3,25 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DYSDK.Dto
+namespace DYSDK.Model
 {
     /// <summary>
     /// 授权接口返回 data实体
     /// </summary>
-    public class OauthResponseData
+    public class OauthResponseData: BaseData
     {
-        /// <summary>
-        /// 错误码
-        /// </summary>
-        [JsonProperty("error_code")]
-        public string ErrorCode { get; set; }
-
-        /// <summary>
-        /// 错误码描述
-        /// </summary>
-        [JsonProperty("description")]
-        public string Description { get; set; }
-
         /// <summary>
         /// 接口调用凭证
         /// </summary>

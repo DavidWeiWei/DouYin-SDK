@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DYSDK.Dto;
+using DYSDK.Model;
 using Newtonsoft.Json;
 
 namespace DYSDK.Response
