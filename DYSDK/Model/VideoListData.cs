@@ -47,7 +47,7 @@ namespace DYSDK.Model
         /// 视频创建时间戳
         /// </summary>
         [JsonProperty("create_time")]
-        public int CreateTime { get; set; }
+        public long CreateTime { get; set; }
 
         /// <summary>
         /// 是否审核通过

@@ -10,12 +10,24 @@ namespace DYSDK.Request
         /// api路径
         /// </summary>
         public abstract string ApiName();
+    }
 
+    /// <summary>
+    /// Get基础请求类
+    /// </summary>
+    public abstract class BaseGetRequest: BaseRequest
+    {
+    }
+
+    /// <summary>
+    /// post请求基类
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class BasePostRequest: BaseRequest
+    {
         /// <summary>
-        /// api请求类型 Post/Get
-        /// Post 类型中 JsonProperty order = 0 表示拼接到 url  order = 1 表示拼接到 body
+        /// 用于传输实体类 json数据格式化
         /// </summary>
-        /// <returns></returns>
-        public abstract string RequestType();
+        public abstract string BodyData();
     }
 }

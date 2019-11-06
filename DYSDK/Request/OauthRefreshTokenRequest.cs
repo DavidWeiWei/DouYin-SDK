@@ -8,16 +8,11 @@ namespace DYSDK.Request
     /// <summary>
     /// /oauth/refresh_token/
     /// </summary>
-    public class OauthRefreshTokenRequest : BaseRequest
+    public class OauthRefreshTokenRequest : BaseGetRequest
     {
         public override string ApiName()
         {
             return "/oauth/refresh_token/";
-        }
-
-        public override string RequestType()
-        {
-            return "GET";
         }
 
         /// <summary>

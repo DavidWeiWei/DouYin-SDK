@@ -74,86 +74,53 @@ namespace DYSDK.Common
             });
             return string.Join("&", keyVals);
         }
-
-        private string GetRequestKeyValue(BaseRequest request,out List<KeyValuePair<string,string>> bodyData)
-        {
-            List<string> keyVals = new List<string>();
-            List<KeyValuePair<string, string>> keyValues = new List<KeyValuePair<string, string>>();
-            Type type = request.GetType();
-            var propList = type.GetProperties().OrderBy(x => x.Name.ToLower()).ToList();
-            propList.ForEach(p =>
-            {
-                JsonPropertyAttribute attr = (JsonPropertyAttribute)p.GetCustomAttributes(typeof(JsonPropertyAttribute), true).FirstOrDefault();
-                if (attr != null)
-                {
-                    int order = attr.Order;
-                    string key = attr.PropertyName;
-                    string value = string.Empty;
-                    if (p.PropertyType.IsClass && p.PropertyType != typeof(String))
-                    {
-                        value = JsonConvert.SerializeObject(p.GetValue(request));
-                    }
-                    else
-                    {
-                        value = p.GetValue(request) != null ? p.GetValue(request).ToString() : string.Empty;
-                    }
-                    switch (key)
-                    {
-                        case "client_key":
-                            value = Client_key;
-                            break;
-                        case "client_secret":
-                            value = Client_secret;
-                            break;
-                    }
-                    if (!string.IsNullOrWhiteSpace(value))
-                    {
-                        // post 请求，order = 1 的字段需要
-                        if (order == 1)
-                        {
-                            keyValues.Add(new KeyValuePair<string, string>(key,value));
-                        }
-                        else
-                        {
-                            keyVals.Add(key + "=" + value);
-                        }
-                    }
-                }
-            });
-            bodyData = keyValues;
-            return string.Join("&", keyVals);
-        }
         #endregion
 
         #region 向抖音发起请求
         /// <summary>
-        /// 向抖音发起请求
+        /// 向抖音发起请求 POST
         /// </summary>
         /// <typeparam name="Res"></typeparam>
         /// <param name="requestParam"></param>
         /// <returns></returns>
-        private Res Execute<Res>(BaseRequest requestParam)
+        private Res Execute<Res>(BaseGetRequest requestParam)
         {
             RestClient restClient = new RestClient(BaseUrl);
-            List<KeyValuePair<string, string>> bodyParam = null;
-            string urlData = string.Empty;
-            RestRequest request;
-            if (requestParam.RequestType() == "POST")
+            string urlData = this.GetRequestKeyValue(requestParam);
+            RestRequest request = new RestRequest(requestParam.ApiName() + "?" + urlData,Method.GET);
+            IRestResponse response = restClient.Execute(request);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                urlData = this.GetRequestKeyValue(requestParam, out bodyParam);
-            }
-            else if (requestParam.RequestType() == "GET")
-            {
-                urlData = this.GetRequestKeyValue(requestParam);
-            }
-            request = new RestRequest(requestParam.ApiName() + "?" + urlData);
-            request.Method = (Method)System.Enum.Parse(typeof(Method), requestParam.RequestType());
-            if (bodyParam!=null && bodyParam.Count > 0)
-            {
-                bodyParam.ForEach(p =>
+                if (!string.IsNullOrWhiteSpace(response.Content))
                 {
-                    request.Parameters.Add(new Parameter(p.Key, p.Value, ParameterType.RequestBody));
-                });
+                    return JsonConvert.DeserializeObject<Res>(response.Content);
+                }
+                else
+                {
+                    throw new Exception("Response.Content is null");
+                }
+            }
+            else
+            {
+                throw new Exception("error code:" + response.Content);
+            }
+
+        }
+
+        /// <summary>
+        /// 向抖音发起请求 POST
+        /// </summary>
+        /// <typeparam name="Res"></typeparam>
+        /// <param name="requestParam"></param>
+        /// <returns></returns>
+        private Res Execute<Res>(BasePostRequest requestParam)
+        {
+            RestClient restClient = new RestClient(BaseUrl);
+            string urlData = this.GetRequestKeyValue(requestParam);
+            RestRequest request = new RestRequest(requestParam.ApiName() + "?" + urlData, Method.POST);
+            if (!string.IsNullOrWhiteSpace(requestParam.BodyData()))
+            {
+                request.AddJsonBody(requestParam.BodyData());
             }
             IRestResponse response = restClient.Execute(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -183,7 +150,7 @@ namespace DYSDK.Common
         /// 获取用户授权url
         /// </summary>
         /// <returns></returns>
-        public string GetLogonAuthorizationUrl(string redirect_uri, string scope = "user_info,video.list,video.data")
+        public string GetLogonAuthorizationUrl(string redirect_uri, string scope = "user_info,video.list,video.data,im")
         {
             string logonAuthorizationUrl = string.Empty;
             PlatformOauthConnectRequest request = new PlatformOauthConnectRequest()
@@ -278,6 +245,43 @@ namespace DYSDK.Common
 
         #endregion
 
+        #region 互动相关
+        /// <summary>
+        /// 向用户发送私信
+        /// </summary>
+        /// <param name="open_id"></param>
+        /// <param name="access_toke"></param>
+        /// <param name="content"></param>
+        /// <param name="message_type"></param>
+        /// <returns></returns>
+        public bool ImMessageSend(string open_id, string access_toke,string content,string message_type = "text")
+        {
+            ImMessageSendRequest request = new ImMessageSendRequest()
+            {
+                OpenId = open_id
+                ,AccessToken = access_toke
+            };
+
+            request.JsonData = new ImMessageSendRequestBody()
+            {
+                Content = content
+                ,MessageType = message_type
+                ,ToUserId = open_id
+            };
+
+            ImMessageSendResponse response = Execute<ImMessageSendResponse>(request);
+            if (response.Data.ErrorCode == "0")
+            {
+                return true;
+            }
+            else
+            {
+                throw new Exception("error code:" + response.Data.ErrorCode + ",error msg:" + response.Data.Description);
+            }
+        }
+
+        #endregion
+
         #region 视频相关
 
         #region 获取用户已经发布得视频列表
@@ -289,7 +293,7 @@ namespace DYSDK.Common
         /// <param name="cursor">分页游标, 默认传0。</param>
         /// <param name="count">每页数量</param>
         /// <returns></returns>
-        public List<VideoData> GetVideoList(string open_id, string access_token, int cursor, int count)
+        public List<VideoData> GetVideoList(string open_id, string access_token, long cursor, int count)
         {
             VideoListRequest request = new VideoListRequest()
             {
@@ -303,7 +307,7 @@ namespace DYSDK.Common
             };
 
             VideoListResponse response = Execute<VideoListResponse>(request);
-            if (response.Message == "success")
+            if (response!=null)
             {
                 return response.Data.List;
             }
@@ -328,11 +332,14 @@ namespace DYSDK.Common
             {
                 OpenId = open_id
                 ,AccessToken  = access_token
-                ,ItemIds = item_ids
             };
 
+            request.JsonData = new VideoDataRequestBody()
+            {
+                ItemIds = item_ids
+            };
             VideoListResponse response = Execute<VideoListResponse>(request);
-            if (response.Message == "success")
+            if (response != null)
             {
                 return response.Data.List;
             }

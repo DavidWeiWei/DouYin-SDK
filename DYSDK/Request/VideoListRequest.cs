@@ -8,16 +8,11 @@ namespace DYSDK.Request
     /// <summary>
     /// 查询授权账号视频数据
     /// </summary>
-    public class VideoListRequest:BaseRequest
+    public class VideoListRequest: BaseGetRequest
     {
         public override string ApiName()
         {
             return "/video/list";
-        }
-
-        public override string RequestType()
-        {
-            return "GET";
         }
 
         /// <summary>
@@ -36,7 +31,7 @@ namespace DYSDK.Request
         /// 分页游标, 默认传0。
         /// </summary>
         [JsonProperty("cursor")]
-        public int Cursor { get; set; }
+        public long Cursor { get; set; }
 
         /// <summary>
         /// 每页数量

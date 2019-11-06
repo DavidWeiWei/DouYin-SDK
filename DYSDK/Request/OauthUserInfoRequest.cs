@@ -8,16 +8,11 @@ namespace DYSDK.Request
     /// <summary>
     /// 获取用户的抖音公开信息，包含昵称、头像、性别和地区。
     /// </summary>
-    public class OauthUserInfoRequest : BaseRequest
+    public class OauthUserInfoRequest : BaseGetRequest
     {
         public override string ApiName()
         {
             return "/oauth/userinfo";
-        }
-
-        public override string RequestType()
-        {
-            return "GET";
         }
 
         /// <summary>

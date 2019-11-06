@@ -23,7 +23,7 @@ namespace DYSDK.Model
         /// 用于下一页请求的cursor
         /// </summary>
         [JsonProperty("cursor")]
-        public int Cursor { get; set; }
+        public long Cursor { get; set; }
 
         /// <summary>
         /// 是否还有更多数据

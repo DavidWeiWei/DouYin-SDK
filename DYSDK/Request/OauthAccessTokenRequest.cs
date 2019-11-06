@@ -8,16 +8,11 @@ namespace DYSDK.Request
     /// <summary>
     /// 获取access_token
     /// </summary>
-    public class OauthAccessTokenRequest : BaseRequest
+    public class OauthAccessTokenRequest : BaseGetRequest
     {
         public override string ApiName()
         {
             return "/oauth/access_token";
-        }
-
-        public override string RequestType()
-        {
-            return "GET";
         }
 
         /// <summary>

@@ -8,16 +8,11 @@ namespace DYSDK.Request
     /// <summary>
     /// 生成 client_token
     /// </summary>
-    public class OauthClientTokenRequest : BaseRequest
+    public class OauthClientTokenRequest : BaseGetRequest
     {
         public override string ApiName()
         {
             return "/oauth/client_token";
-        }
-
-        public override string RequestType()
-        {
-            return "GET";
         }
 
         /// <summary>
