@@ -6,6 +6,8 @@ using System.Text;
 
 namespace DYSDK.Model
 {
+
+
     /// <summary>
     /// 用户公开信息 实体类
     /// </summary>

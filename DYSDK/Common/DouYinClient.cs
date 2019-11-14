@@ -284,9 +284,9 @@ namespace DYSDK.Common
 
         #region 视频相关
 
-        #region 获取用户已经发布得视频列表
+        #region 获取用户已经发布得视频列表 分页
         /// <summary>
-        /// 获取用户已经发布得视频列表
+        /// 获取用户已经发布得视频列表 分页
         /// </summary>
         /// <param name="open_id">用户应用标识</param>
         /// <param name="access_token">用户授权token</param>
@@ -310,6 +310,45 @@ namespace DYSDK.Common
             if (response!=null)
             {
                 return response.Data.List;
+            }
+            else
+            {
+                throw new Exception("error code:" + response.Data.ErrorCode + ",error msg:" + response.Data.Description);
+            }
+        }
+        #endregion
+
+        #region 获取用户下的所有视频
+        /// <summary>
+        /// 获取用户下的所有视频
+        /// </summary>
+        /// <param name="open_id"></param>
+        /// <param name="access_token"></param>
+        /// <param name="cursor"></param>
+        /// <param name="count"></param>
+        /// <param name="videoDatas"></param>
+        public void GetAllVideoData(string open_id, string access_token, long cursor, int count,ref List<VideoData> videoDatas)
+        {
+            VideoListRequest request = new VideoListRequest()
+            {
+                OpenId = open_id
+                ,
+                AccessToken = access_token
+                ,
+                Cursor = cursor
+                ,
+                Count = count
+            };
+
+            VideoListResponse response = Execute<VideoListResponse>(request);
+            if (response != null)
+            {
+                videoDatas.AddRange(response.Data.List);
+                if (response.Data.HasMore)
+                {
+                    cursor = response.Data.Cursor;
+                    GetAllVideoData(open_id, access_token, cursor, count, ref videoDatas);
+                }
             }
             else
             {
