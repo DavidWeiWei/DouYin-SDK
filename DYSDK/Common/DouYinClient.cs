@@ -309,7 +309,14 @@ namespace DYSDK.Common
             VideoListResponse response = Execute<VideoListResponse>(request);
             if (response!=null)
             {
-                return response.Data.List;
+                if (response.Data!=null && response.Data.List !=null && response.Data.List.Count > 0)
+                {
+                    return response.Data.List;
+                }
+                else
+                {
+                    return new List<VideoData>();
+                }
             }
             else
             {
@@ -343,11 +350,18 @@ namespace DYSDK.Common
             VideoListResponse response = Execute<VideoListResponse>(request);
             if (response != null)
             {
-                videoDatas.AddRange(response.Data.List);
-                if (response.Data.HasMore)
+                if (response.Data!=null && response.Data.List!=null && response.Data.List.Count > 0)
                 {
-                    cursor = response.Data.Cursor;
-                    GetAllVideoData(open_id, access_token, cursor, count, ref videoDatas);
+                    videoDatas.AddRange(response.Data.List);
+                    if (response.Data.HasMore)
+                    {
+                        cursor = response.Data.Cursor;
+                        GetAllVideoData(open_id, access_token, cursor, count, ref videoDatas);
+                    }
+                }
+                else
+                {
+                    videoDatas = new List<VideoData>();
                 }
             }
             else
