@@ -150,7 +150,7 @@ namespace DYSDK.Common
         /// 获取用户授权url
         /// </summary>
         /// <returns></returns>
-        public string GetLogonAuthorizationUrl(string redirect_uri, string scope = "user_info,video.list,video.data,im")
+        public string GetLogonAuthorizationUrl(string redirect_uri, string scope = "user_info,video.list,video.data,video.comment,im,fans.data,")
         {
             string logonAuthorizationUrl = string.Empty;
             PlatformOauthConnectRequest request = new PlatformOauthConnectRequest()
@@ -245,43 +245,6 @@ namespace DYSDK.Common
 
         #endregion
 
-        #region 互动相关
-        /// <summary>
-        /// 向用户发送私信
-        /// </summary>
-        /// <param name="open_id"></param>
-        /// <param name="access_toke"></param>
-        /// <param name="content"></param>
-        /// <param name="message_type"></param>
-        /// <returns></returns>
-        public bool ImMessageSend(string open_id, string access_toke,string content,string message_type = "text")
-        {
-            ImMessageSendRequest request = new ImMessageSendRequest()
-            {
-                OpenId = open_id
-                ,AccessToken = access_toke
-            };
-
-            request.JsonData = new ImMessageSendRequestBody()
-            {
-                Content = content
-                ,MessageType = message_type
-                ,ToUserId = open_id
-            };
-
-            ImMessageSendResponse response = Execute<ImMessageSendResponse>(request);
-            if (response.Data.ErrorCode == "0")
-            {
-                return true;
-            }
-            else
-            {
-                throw new Exception("error code:" + response.Data.ErrorCode + ",error msg:" + response.Data.Description);
-            }
-        }
-
-        #endregion
-
         #region 视频相关
 
         #region 获取用户已经发布得视频列表 分页
@@ -307,9 +270,9 @@ namespace DYSDK.Common
             };
 
             VideoListResponse response = Execute<VideoListResponse>(request);
-            if (response!=null)
+            if (response != null)
             {
-                if (response.Data!=null && response.Data.List !=null && response.Data.List.Count > 0)
+                if (response.Data != null && response.Data.List != null && response.Data.List.Count > 0)
                 {
                     return response.Data.List;
                 }
@@ -334,7 +297,7 @@ namespace DYSDK.Common
         /// <param name="cursor"></param>
         /// <param name="count"></param>
         /// <param name="videoDatas"></param>
-        public void GetAllVideoData(string open_id, string access_token, long cursor, int count,ref List<VideoData> videoDatas)
+        public void GetAllVideoData(string open_id, string access_token, long cursor, int count, ref List<VideoData> videoDatas)
         {
             VideoListRequest request = new VideoListRequest()
             {
@@ -350,7 +313,7 @@ namespace DYSDK.Common
             VideoListResponse response = Execute<VideoListResponse>(request);
             if (response != null)
             {
-                if (response.Data!=null && response.Data.List!=null && response.Data.List.Count > 0)
+                if (response.Data != null && response.Data.List != null && response.Data.List.Count > 0)
                 {
                     videoDatas.AddRange(response.Data.List);
                     if (response.Data.HasMore)
@@ -379,12 +342,13 @@ namespace DYSDK.Common
         /// <param name="access_token">用户授权token</param>
         /// <param name="item_ids">视频ids</param>
         /// <returns></returns>
-        public List<VideoData> GetVideoData(string open_id,string access_token,List<string> item_ids)
+        public List<VideoData> GetVideoData(string open_id, string access_token, List<string> item_ids)
         {
             VideoDataRequest request = new VideoDataRequest()
             {
                 OpenId = open_id
-                ,AccessToken  = access_token
+                ,
+                AccessToken = access_token
             };
 
             request.JsonData = new VideoDataRequestBody()
@@ -394,7 +358,7 @@ namespace DYSDK.Common
             VideoListResponse response = Execute<VideoListResponse>(request);
             if (response != null)
             {
-                if (response.Data.List!=null)
+                if (response.Data.List != null)
                 {
                     return response.Data.List;
                 }
@@ -411,6 +375,55 @@ namespace DYSDK.Common
         #endregion
 
         #endregion
+
+        #region 互动相关
+
+        #region 发私信给用户
+        /// <summary>
+        /// 向用户发送私信
+        /// </summary>
+        /// <param name="open_id"></param>
+        /// <param name="access_toke"></param>
+        /// <param name="content"></param>
+        /// <param name="message_type"></param>
+        /// <returns></returns>
+        public bool ImMessageSend(string open_id, string access_toke, string content, string message_type = "text")
+        {
+            ImMessageSendRequest request = new ImMessageSendRequest()
+            {
+                OpenId = open_id
+                ,
+                AccessToken = access_toke
+            };
+
+            request.JsonData = new ImMessageSendRequestBody()
+            {
+                Content = content
+                ,
+                MessageType = message_type
+                ,
+                ToUserId = open_id
+            };
+
+            ImMessageSendResponse response = Execute<ImMessageSendResponse>(request);
+            if (response.Data.ErrorCode == "0")
+            {
+                return true;
+            }
+            else
+            {
+                throw new Exception("error code:" + response.Data.ErrorCode + ",error msg:" + response.Data.Description);
+            }
+        }
+        #endregion
+
+        #region 获取视频评论
+
+        #endregion
+
+        #endregion
+
+
 
     }
 }
