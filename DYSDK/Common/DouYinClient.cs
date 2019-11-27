@@ -380,7 +380,14 @@ namespace DYSDK.Common
             VideoListResponse response = Execute<VideoListResponse>(request);
             if (response != null)
             {
-                return response.Data.List;
+                if (response.Data.List!=null)
+                {
+                    return response.Data.List;
+                }
+                else
+                {
+                    return new List<VideoData>();
+                }
             }
             else
             {
