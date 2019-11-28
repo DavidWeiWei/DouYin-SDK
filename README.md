@@ -1,2 +1,2 @@
-# DouYinOpenAPISDK
-抖音OpenAPISDK
+# DouYin SDK
+抖音开放平台 OpenAPI SDK
