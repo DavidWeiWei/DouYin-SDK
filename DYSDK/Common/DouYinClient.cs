@@ -150,7 +150,7 @@ namespace DYSDK.Common
         /// 获取用户授权url
         /// </summary>
         /// <returns></returns>
-        public string GetLogonAuthorizationUrl(string redirect_uri, string scope = "user_info,video.list,video.data,video.comment,im,fans.data,")
+        public string GetLogonAuthorizationUrl(string redirect_uri, string scope = "user_info,video.list,video.data,video.comment,im,fans.data")
         {
             string logonAuthorizationUrl = string.Empty;
             PlatformOauthConnectRequest request = new PlatformOauthConnectRequest()
@@ -233,6 +233,33 @@ namespace DYSDK.Common
             };
 
             OauthUserInfoResponse response = Execute<OauthUserInfoResponse>(request);
+            if (response.Message == "success")
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw new Exception("error code:" + response.Data.ErrorCode + ",error msg:" + response.Data.Description);
+            }
+        }
+        #endregion
+
+        #region 获取粉丝统计数据
+        /// <summary>
+        /// 获取粉丝统计数据
+        /// </summary>
+        /// <param name="open_id"></param>
+        /// <param name="access_token"></param>
+        /// <returns></returns>
+        public FansData GetFansData(string open_id, string access_token)
+        {
+            FansDataRequest request = new FansDataRequest()
+            {
+                OpenId = open_id
+                ,
+                AccessToken = access_token
+            };
+            FansDataResponse response = Execute<FansDataResponse>(request);
             if (response.Message == "success")
             {
                 return response.Data;
@@ -618,23 +645,26 @@ namespace DYSDK.Common
         /// <param name="comment_id"></param>
         /// <param name="content"></param>
         /// <returns></returns>
-        public bool VideoCommentReply(string open_id, string access_token,string item_id,string comment_id, string content)
+        public bool VideoCommentReply(string open_id, string access_token, string item_id, string comment_id, string content)
         {
             VideoCommentReplyRequest request = new VideoCommentReplyRequest()
             {
                 OpenId = open_id
-                ,AccessToken = access_token
+                ,
+                AccessToken = access_token
             };
 
             request.JsonData = new VideoCommentReplyRequestBody()
             {
                 ItemId = item_id
-                ,CommentId = comment_id
-                ,Content = content
+                ,
+                CommentId = comment_id
+                ,
+                Content = content
             };
 
             VideoCommentReplyListResponse response = Execute<VideoCommentReplyListResponse>(request);
-            if(response.Data.ErrorCode == "0")
+            if (response.Data.ErrorCode == "0")
             {
                 return true;
             }
