@@ -87,7 +87,7 @@ namespace DYSDK.Common
         {
             RestClient restClient = new RestClient(BaseUrl);
             string urlData = this.GetRequestKeyValue(requestParam);
-            RestRequest request = new RestRequest(requestParam.ApiName() + "?" + urlData,Method.GET);
+            RestRequest request = new RestRequest(requestParam.ApiName() + "?" + urlData, Method.GET);
             IRestResponse response = restClient.Execute(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -223,12 +223,13 @@ namespace DYSDK.Common
         /// </summary>
         /// <param name="open_id">用户在应用的唯一标识</param>
         /// <returns></returns>
-        public OauthUserInfoData GetUserInfo(string open_id,string access_token)
+        public OauthUserInfoData GetUserInfo(string open_id, string access_token)
         {
             OauthUserInfoRequest request = new OauthUserInfoRequest()
             {
                 OpenId = open_id
-                ,AccessToken = access_token
+                ,
+                AccessToken = access_token
             };
 
             OauthUserInfoResponse response = Execute<OauthUserInfoResponse>(request);
@@ -383,17 +384,17 @@ namespace DYSDK.Common
         /// 向用户发送私信
         /// </summary>
         /// <param name="open_id"></param>
-        /// <param name="access_toke"></param>
+        /// <param name="access_token"></param>
         /// <param name="content"></param>
         /// <param name="message_type"></param>
         /// <returns></returns>
-        public bool ImMessageSend(string open_id, string access_toke, string content, string message_type = "text")
+        public bool ImMessageSend(string open_id, string access_token, string content, string message_type = "text")
         {
             ImMessageSendRequest request = new ImMessageSendRequest()
             {
                 OpenId = open_id
                 ,
-                AccessToken = access_toke
+                AccessToken = access_token
             };
 
             request.JsonData = new ImMessageSendRequestBody()
@@ -417,13 +418,232 @@ namespace DYSDK.Common
         }
         #endregion
 
-        #region 获取视频评论
-
+        #region 获取视频评论 分页
+        /// <summary> 
+        /// 获取视频评论 分页
+        /// </summary>
+        /// <param name="open_id"></param>
+        /// <param name="access_token"></param>
+        /// <param name="cursor"></param>
+        /// <param name="count"></param>
+        /// <param name="item_id"></param>
+        /// <returns></returns>
+        public List<VideoCommentData> GetVideoCommentList(string open_id, string access_token, long cursor, int count, string item_id)
+        {
+            VideoCommentListRequest request = new VideoCommentListRequest()
+            {
+                OpenId = open_id
+                ,
+                AccessToken = access_token
+                ,
+                Cursor = cursor
+                ,
+                Count = count
+                ,
+                ItemId = item_id
+            };
+            VideoCommentListResponse response = Execute<VideoCommentListResponse>(request);
+            if (response != null)
+            {
+                if (response.Data != null && response.Data.List != null && response.Data.List.Count > 0)
+                {
+                    return response.Data.List;
+                }
+                else
+                {
+                    return new List<VideoCommentData>();
+                }
+            }
+            else
+            {
+                throw new Exception("error code:" + response.Data.ErrorCode + ",error msg:" + response.Data.Description);
+            }
+        }
         #endregion
 
+        #region 获取视频下的所有评论数据
+        /// <summary>
+        /// 获取视频下的所有评论数据
+        /// </summary>
+        /// <param name="open_id"></param>
+        /// <param name="access_token"></param>
+        /// <param name="cursor"></param>
+        /// <param name="count"></param>
+        /// <param name="item_id"></param>
+        /// <param name="videoComments"></param>
+        public void GetVideoAllCommentList(string open_id, string access_token, long cursor, int count, string item_id, ref List<VideoCommentData> videoComments)
+        {
+            VideoCommentListRequest request = new VideoCommentListRequest()
+            {
+                OpenId = open_id
+                ,
+                AccessToken = access_token
+                ,
+                Cursor = cursor
+                ,
+                Count = count
+                ,
+                ItemId = item_id
+            };
+            VideoCommentListResponse response = Execute<VideoCommentListResponse>(request);
+            if (response != null)
+            {
+                if (response.Data != null && response.Data.List != null && response.Data.List.Count > 0)
+                {
+                    videoComments.AddRange(response.Data.List);
+                    if (response.Data.HasMore)
+                    {
+                        cursor = response.Data.Cursor;
+                        GetVideoAllCommentList(open_id, access_token, cursor, count, item_id, ref videoComments);
+                    }
+                }
+                else
+                {
+                    videoComments = new List<VideoCommentData>();
+                }
+            }
+            else
+            {
+                throw new Exception("error code:" + response.Data.ErrorCode + ",error msg:" + response.Data.Description);
+            }
+        }
         #endregion
 
+        #region 获取评论回复列表
+        /// <summary>
+        /// 获取评论回复列表 分页
+        /// </summary>
+        /// <param name="open_id"></param>
+        /// <param name="access_token"></param>
+        /// <param name="cursor"></param>
+        /// <param name="count"></param>
+        /// <param name="item_id"></param>
+        /// <param name="comment_id"></param>
+        /// <returns></returns>
+        public List<VideoCommentData> GetVideoCommentReplyList(string open_id, string access_token, long cursor, int count, string item_id, string comment_id)
+        {
+            VideoCommentReplyListRequest request = new VideoCommentReplyListRequest()
+            {
+                OpenId = open_id
+                ,
+                AccessToken = access_token
+                ,
+                Cursor = cursor
+                ,
+                Count = count
+                ,
+                ItemId = item_id
+                ,
+                CommentId = comment_id
+            };
 
+            VideoCommentReplyListResponse response = Execute<VideoCommentReplyListResponse>(request);
+            if (response != null)
+            {
+                if (response.Data != null && response.Data.List != null && response.Data.List.Count > 0)
+                {
+                    return response.Data.List;
+                }
+                else
+                {
+                    return new List<VideoCommentData>();
+                }
+            }
+            else
+            {
+                throw new Exception("error code:" + response.Data.ErrorCode + ",error msg:" + response.Data.Description);
+            }
+        }
+        #endregion
 
+        #region 获取评论下的所有回复评论
+        /// <summary>
+        /// 获取评论下的所有回复评论
+        /// </summary>
+        /// <param name="open_id"></param>
+        /// <param name="access_token"></param>
+        /// <param name="cursor"></param>
+        /// <param name="count"></param>
+        /// <param name="item_id"></param>
+        /// <param name="comment_id"></param>
+        /// <param name="commentDatas"></param>
+        public void GetVideoCommentAllReplyList(string open_id, string access_token, long cursor, int count, string item_id, string comment_id, ref List<VideoCommentData> videoComments)
+        {
+            VideoCommentReplyListRequest request = new VideoCommentReplyListRequest()
+            {
+                OpenId = open_id
+                ,
+                AccessToken = access_token
+                ,
+                Cursor = cursor
+                ,
+                Count = count
+                ,
+                ItemId = item_id
+                ,
+                CommentId = comment_id
+            };
+
+            VideoCommentReplyListResponse response = Execute<VideoCommentReplyListResponse>(request);
+            if (response != null)
+            {
+                if (response.Data != null && response.Data.List != null && response.Data.List.Count > 0)
+                {
+                    videoComments.AddRange(response.Data.List);
+                    if (response.Data.HasMore)
+                    {
+                        cursor = response.Data.Cursor;
+                        GetVideoCommentAllReplyList(open_id, access_token, cursor, count, item_id, comment_id, ref videoComments);
+                    }
+                }
+                else
+                {
+                    videoComments = new List<VideoCommentData>();
+                }
+            }
+            else
+            {
+                throw new Exception("error code:" + response.Data.ErrorCode + ",error msg:" + response.Data.Description);
+            }
+        }
+        #endregion
+
+        #region 回复视频评论
+        /// <summary>
+        /// 回复视频评论
+        /// </summary>
+        /// <param name="open_id"></param>
+        /// <param name="access_token"></param>
+        /// <param name="item_id"></param>
+        /// <param name="comment_id"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public bool VideoCommentReply(string open_id, string access_token,string item_id,string comment_id, string content)
+        {
+            VideoCommentReplyRequest request = new VideoCommentReplyRequest()
+            {
+                OpenId = open_id
+                ,AccessToken = access_token
+            };
+
+            request.JsonData = new VideoCommentReplyRequestBody()
+            {
+                ItemId = item_id
+                ,CommentId = comment_id
+                ,Content = content
+            };
+
+            VideoCommentReplyListResponse response = Execute<VideoCommentReplyListResponse>(request);
+            if(response.Data.ErrorCode == "0")
+            {
+                return true;
+            }
+            else
+            {
+                throw new Exception("error code:" + response.Data.ErrorCode + ",error msg:" + response.Data.Description);
+            }
+        }
+        #endregion
+        #endregion
     }
 }
