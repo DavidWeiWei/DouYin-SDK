@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 namespace DYSDK.Common
 {
@@ -68,7 +69,7 @@ namespace DYSDK.Common
                     }
                     if (!string.IsNullOrWhiteSpace(value))
                     {
-                        keyVals.Add(key + "=" + value);
+                        keyVals.Add(key + "=" + HttpUtility.UrlEncode(value));
                     }
                 }
             });

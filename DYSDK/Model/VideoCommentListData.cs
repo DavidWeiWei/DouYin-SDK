@@ -53,6 +53,6 @@ namespace DYSDK.Model
         /// 回复评论数
         /// </summary>
         [JsonProperty("reply_comment_total")]
-        public string ReplyCommentTotal { get; set; }
+        public int ReplyCommentTotal { get; set; }
     }
 }
