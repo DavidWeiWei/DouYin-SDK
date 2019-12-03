@@ -7,6 +7,12 @@ namespace DYSDK.Model
 {
     public class FansData:BaseData
     {
+        [JsonProperty("fans_data")]
+        public FansDataModel FansDataModel { get; set; }
+    }
+
+    public class FansDataModel
+    {
         [JsonProperty("all_fans_num")]
         public int AllFansNum { get; set; }
 

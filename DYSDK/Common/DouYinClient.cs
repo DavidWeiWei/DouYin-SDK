@@ -261,7 +261,7 @@ namespace DYSDK.Common
                 AccessToken = access_token
             };
             FansDataResponse response = Execute<FansDataResponse>(request);
-            if (response.Message == "success")
+            if (response.Data!= null && response.Data.FansDataModel!=null)
             {
                 return response.Data;
             }
