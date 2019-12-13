@@ -12,7 +12,7 @@ namespace DYSDK.Request
     {
         public override string ApiName()
         {
-            return "/im/message/send";
+            return "/im/message/send/";
         }
 
         public override string BodyData()

@@ -12,7 +12,7 @@ namespace DYSDK.Request
     {
         public override string ApiName()
         {
-            return "/video/data";
+            return "/video/data/";
         }
 
         public override string BodyData()

@@ -12,7 +12,7 @@ namespace DYSDK.Request
     {
         public override string ApiName()
         {
-            return "/oauth/client_token";
+            return "/oauth/client_token/";
         }
 
         /// <summary>

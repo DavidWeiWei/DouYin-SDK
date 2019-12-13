@@ -9,7 +9,7 @@ namespace DYSDK.Request
     {
         public override string ApiName()
         {
-            return "/fans/data";
+            return "/fans/data/";
         }
 
         /// <summary>
